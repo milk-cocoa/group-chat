@@ -62,8 +62,8 @@
         if(user) {
             current_user.id = user.id;
             current_user.email = user.email;
-            var usernameDataStore = milkcocoa.dataStore("username");
-            usernameDataStore.get(current_user.id, function(e) {
+            var userDataStore = milkcocoa.dataStore("user").child(current_user.id);
+            userDataStore.get("info", function(e) {
                 if(e) {
                     current_user.name = e.username;
                 }else{

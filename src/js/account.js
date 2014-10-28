@@ -1,6 +1,5 @@
 (function(){
 	function init(app, milkcocoa, option) {
-		var usernameDataStore = milkcocoa.dataStore("username");
 	    Vue.component('account', {
 	        template: "#account-template",
 	        data : {
@@ -12,13 +11,15 @@
 	        methods : {
 	            fetch : function() {
 	            	var self = this;
-	            	usernameDataStore.get(option.current_user.id, function(e) {
+					var userDataStore = milkcocoa.dataStore("user").child(option.current_user.id);
+	            	userDataStore.get("info", function(e) {
 	            		self.username = e.username;
 	            	});
 	            },
 	            update : function() {
 	            	var self = this;
-	            	usernameDataStore.set(option.current_user.id, {
+					var userDataStore = milkcocoa.dataStore("user").child(option.current_user.id);
+	            	userDataStore.set("info", {
 	            		username : self.username
 	            	});
 	            }
