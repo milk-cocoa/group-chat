@@ -69,10 +69,6 @@
 	            	});
 	            	location.hash = global.Util.escapeHTML(owner_id) + "/" + global.Util.escapeHTML(topic_id);
 	            	app.currentView = "chat";
-	            },
-	            goto_account : function() {
-	            	location.hash = "account";
-	            	app.currentView = "account";
 	            }
 	        }
 	    });

@@ -4,6 +4,7 @@
 	    Vue.component('invite', {
 	        template: "#invite-template",
 	        data : {
+	        	topic_link : "",
 	        	title : "",
 	        	allow_users : [],
 	        	invited_user_email : ""
@@ -17,6 +18,7 @@
 					var topic_id = option.current_topic.id;
 					var owner_id = option.current_topic.owner_id;
 					var user_id = option.current_user.id;
+					self.topic_link = "#" + owner_id + "/" + topic_id;
 
 					var topicDataStore = milkcocoa.dataStore("topics").child(owner_id);
 	                topicDataStore.get(topic_id, function(topic) {
@@ -32,6 +34,7 @@
 							}
 						});
 					});
+					allowDataStore.off("set");
 					allowDataStore.on("set", function(e) {
 						self.allow_users.push({
 							email : e.id
@@ -47,7 +50,7 @@
 					allowDataStore.set(self.invited_user_email, {
 						email : self.invited_user_email
 					});
-					email2user.get(self.invited_user_email, function(invited_user) {
+					email2userDataStore.get(self.invited_user_email, function(invited_user) {
 						var userTopicsDataStore = milkcocoa.dataStore("user").child(invited_user.user_id).child("topics");
 						userTopicsDataStore.set(topic_id , {
 							topic_id : topic_id,

@@ -5,7 +5,7 @@ var rename = require('gulp-rename');
 
 gulp.task('js-task',function(){
     return gulp.src('src/js/*.js')
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('exports/js/'));
 });

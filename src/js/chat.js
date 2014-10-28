@@ -4,6 +4,7 @@
 	    return Vue.component('chat', {
 	        template: "#chat-template",
 	        data : {
+	        	invite_link : "",
 	        	title : "",
 	            messages : [],
 	            new_message : ""
@@ -35,12 +36,14 @@
 	                var self = this;
 					var topic_id = option.current_topic.id;
 					var owner_id = option.current_topic.owner_id;
+					self.invite_link = "#" + owner_id + "/" + topic_id + "/invite";
 					var topicDataStore = milkcocoa.dataStore("topics").child(owner_id);
 					var messageDataStore = topicDataStore.child(topic_id);
 	                topicDataStore.get(topic_id, function(topic) {
 	                	self.title = topic.title;
 	                    window.document.title = self.title;
 	                });
+	                messageDataStore.off("push");
 	                messageDataStore.on("push", function(e) {
 	                	self.messages.unshift({
 	                		content : global.Util.escapeHTML(e.value.content),
@@ -52,9 +55,6 @@
 	                messageDataStore.query().sort('desc').limit(20).done(function(memos) {
 	                    self.messages = memos;
 	                });
-	            },
-	            goto_invite : function() {
-	            	app.currentView = "invite";
 	            }
 	        }
 	    });

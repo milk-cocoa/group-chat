@@ -84,7 +84,11 @@
                 var hashes = hash.split("/");
                 current_topic.owner_id = hashes[0];
                 current_topic.id = hashes[1];
-                app.currentView = "chat";
+                if(hashes[2] == "invite") {
+                    app.currentView = "invite";
+                }else{
+                    app.currentView = "chat";
+                }
             }
         }else{
             app.currentView = "topics";
