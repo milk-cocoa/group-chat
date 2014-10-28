@@ -17,8 +17,8 @@
 	                    }else if(err == MilkCocoa.Error.AddAccount.AlreadyExist) {
 	                        self.message = "Emailアドレスが既に使われています。";
 	                    }else{
-	                    	var userDataStore = milkcocoa.dataStore("user");
-	                    	userDataStore.set(self.email, {
+							var email2userDataStore = milkcocoa.dataStore("email2user");
+	                    	email2userDataStore.set(self.email, {
 	                    		user_id : user.id
 	                    	});
 	                        app.currentView = "login";

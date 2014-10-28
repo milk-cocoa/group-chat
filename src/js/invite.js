@@ -1,6 +1,6 @@
 (function(){
 	function init(app, milkcocoa, option) {
-		var userDataStore = milkcocoa.dataStore("user");
+		var email2userDataStore = milkcocoa.dataStore("email2user");
 	    Vue.component('invite', {
 	        template: "#invite-template",
 	        data : {
@@ -47,7 +47,7 @@
 					allowDataStore.set(self.invited_user_email, {
 						email : self.invited_user_email
 					});
-					userDataStore.get(self.invited_user_email, function(invited_user) {
+					email2user.get(self.invited_user_email, function(invited_user) {
 						var userTopicsDataStore = milkcocoa.dataStore("user").child(invited_user.user_id).child("topics");
 						userTopicsDataStore.set(topic_id , {
 							topic_id : topic_id,
