@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Timeline</title>
+
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<script id="register-template" type="text/template">
+    <div>
+    <h2>新規登録</h2>
+    <div>
+        <input type="email" class="form-item-text" v-model="email" placeholder="Email address" required autofocus>
+    </div>
+    <div>
+        <input type="password" class="form-item-text" v-model="password" placeholder="Password" required>
+    </div>
+    <div>
+        <input type="password" class="form-item-text" v-model="confirm" placeholder="Confirm" required>
+    </div>
+    <div v-text="message"></div>
+    <button class="btn btn-default" v-on="click: register()">新規登録</button>
+    <a class="link-btn" v-on="click: goto_login_view()">ログインはこちら</a>
+    </div>
+</script>
+
+<script id="login-template" type="text/template">
+    <div>
+    <h2>ログイン</h2>
+    <div>
+        <input type="email" class="form-item-text" v-model="email" placeholder="Email address" required autofocus>
+    </div>
+    <div>
+        <input type="password" class="form-item-text" v-model="password" placeholder="Password" required>
+    </div>
+    <div v-text="message"></div>
+    <button class="btn btn-default" v-on="click: login()">ログイン</button>
+    <a class="link-btn" v-on="click: goto_reg_view()">新規登録はこちら</a>
+    </div>
+</script>
+
+
+<script id="topics-template" type="text/template">
+<div class="row">
+	<div class="col-xs-8">
+		<ol class="breadcrumb">
+		  <li><a href="#" class="active">Topics</a></li>
+		</ol>
+	</div>
+	<div class="col-xs-2">
+		<!-- Single button -->
+		<div class="btn-group">
+		  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		    メニュー <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu">
+		    <li><a v-on="click: goto_account()">アカウント</a></li>
+		  </ul>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-6">
+		<div class="input-group">
+	      <input type="text" class="form-control" v-model="new_topic">
+	      <span class="input-group-btn">
+	        <button class="btn btn-default" type="button" v-on="click: create()">トピック作成</button>
+	      </span>
+	    </div>
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-lg-6">
+		<div class="list-group">
+		  <a class="list-group-item" v-repeat="topics | topics_filter" v-on="click: goto_chatroom(topic_id, owner_id)">
+		    <h4 class="list-group-item-heading" v-text="title"></h4>
+		    <div class="list-group-item-text"></div>
+		  </a>
+		</div>
+	</div>
+</div>
+</script>
+
+<script id="chat-template" type="text/template">
+<div class="row">
+	<div class="col-xs-8">
+		<ol class="breadcrumb">
+		  <li><a href="#">Topics</a></li>
+		  <li class="active" v-text="title"></li>
+		</ol>
+	</div>
+	<div class="col-xs-2">
+		<!-- Single button -->
+		<div class="btn-group">
+		  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+		    メニュー <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu">
+		    <li><a v-on="click: goto_invite()">招待</a></li>
+		  </ul>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6">
+		<div class="input-group">
+	      <input type="text" class="form-control" v-model="new_message">
+	      <span class="input-group-btn">
+	        <button class="btn btn-default" type="button" v-on="click: post()">投稿</button>
+	      </span>
+	    </div><!-- /input-group -->
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-lg-6">
+		<ul class="list-group">
+			<li class="list-group-item" v-repeat="messages | messages_filter"><span class="badge" v-text="user.name"></span><div v-text="content"></div></li>
+		</ul>
+	</div>
+</div>
+</script>
+
+<script id="account-template" type="text/template">
+<ol class="breadcrumb">
+  <li><a href="#">トピック</a></li>
+  <li class="active">アカウント</li>
+</ol>
+	<div class="row">
+	  <div class="col-lg-6">
+	  	ユーザ名を入力してください。
+		<div class="input-group">
+	      <input type="text" class="form-control" v-model="username">
+	      <span class="input-group-btn">
+	        <button class="btn btn-default" type="button" v-on="click: update()">更新</button>
+	      </span>
+	    </div>
+	  </div>
+	</div>
+</script>
+
+<script id="invite-template" type="text/template">
+<ol class="breadcrumb">
+  <li><a href="#">トピック</a></li>
+  <li class="active">招待</li>
+</ol>
+	<div class="row">
+	  <div class="col-lg-6">
+		<ul class="list-group">
+			<li class="list-group-item" v-repeat="allow_users"><div v-text="email"></div></li>
+		</ul>
+	  </div>
+	</div>
+	<div class="row">
+	  <div class="col-lg-6">
+	  	Emailアドレスを入力してください。
+		<div class="input-group">
+	      <input type="text" class="form-control" v-model="invited_user_email">
+	      <span class="input-group-btn">
+	        <button class="btn btn-default" type="button" v-on="click: invite()">招待</button>
+	      </span>
+	    </div>
+	  </div>
+	</div>
+</script>
+
+  </head>
+  <body>
+
+		<div class="container">
+            <div id="content">
+                <div v-view="currentView"></div>
+            </div>
+        </div> <!-- /container -->
+        <script src="js/lib/vue.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://cdn.mlkcca.com/v0.2.8/milkcocoa.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="js/login.min.js"></script>
+	<script src="js/register.min.js"></script>
+	<script src="js/topics.min.js"></script>
+	<script src="js/chat.min.js"></script>
+	<script src="js/account.min.js"></script>
+	<script src="js/invite.min.js"></script>
+	<script src="js/groupchat.min.js"></script>
+  </body>
+</html>
