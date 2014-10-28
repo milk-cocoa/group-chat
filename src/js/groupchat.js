@@ -1,0 +1,96 @@
+(function(){
+	var milkcocoa = new MilkCocoa("https://io-di1sl8dpt.mlkcca.com:443/");
+    var current_topic = {
+        id : ""
+    }
+	var current_user = {
+		id : "",
+		name : ""
+	}
+
+    var global = {};
+
+    function Util() {
+
+    }
+
+    Util.escapeHTML = function(val) {
+        return $('<div>').text(val).html();f
+    }
+
+	function getMessageDataStore(topic_id) {
+		return topicDataStore.child(topic_id);
+	}
+
+    var app = new Vue({
+        el: '#content',
+        data: {
+            currentView: null
+        }
+    });
+    init_login(app, milkcocoa, function(err, user) {
+        app.currentView = "topics";
+        current_user.id = user.id;
+    });
+    init_register(app, milkcocoa);
+    init_topics(app, milkcocoa, {
+        global : global,
+        current_user : current_user,
+        onSelectTopic : function(err, topic) {
+            current_topic.id = topic.id;
+            current_topic.owner_id = topic.owner_id;
+            current_topic.title = topic.title;            
+        }
+    });
+    init_chat(app, milkcocoa, {
+        global : global,
+        current_topic : current_topic,
+        current_user : current_user
+    });
+    init_account(app, milkcocoa, {
+        current_user : current_user
+    });
+    init_invite(app, milkcocoa, {
+        current_user : current_user,
+        current_topic : current_topic
+    });
+
+
+
+
+    milkcocoa.getCurrentUser(function(err, user) {
+        if(user) {
+            current_user.id = user.id;
+            current_user.email = user.email;
+            var usernameDataStore = milkcocoa.dataStore("username");
+            usernameDataStore.get(current_user.id, function(e) {
+                if(e) {
+                    current_user.name = e.username;
+                }else{
+                    current_user.name = current_user.email;
+                }
+                app.currentView = "topics";
+            });
+        }else{
+            app.currentView = "login";
+        }
+    });
+
+	function hashchange() {
+		current_topic.id = location.hash.substr(1);
+        if(current_topic.id) {
+            if(current_topic.id == "account") app.currentView = "account";
+            else app.currentView = "chat";
+        }else{
+            app.currentView = "topics";
+        }
+	}
+
+	//hashchange();
+	window.onhashchange = function() {
+		hashchange();
+	}
+
+    global.Util = Util;
+
+}())

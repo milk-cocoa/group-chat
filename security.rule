@@ -1,0 +1,24 @@
+topics/* {
+permit : push;
+rule : true;
+}
+
+topics/[userid]/[topicid]/allow {
+	permit : all;
+	rule : userid == account.id;
+}
+
+topics/[userid]/[topicid] {
+	permit : all;
+	rule : dataStore("topics/" + userid + "/" + topicid + "/allow").exist({email : account.email});
+}
+
+user {
+  permit : set, get;
+  rule: true;
+}
+
+* {
+permit : all;
+rule : true;
+}
