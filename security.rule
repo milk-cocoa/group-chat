@@ -23,3 +23,7 @@ user/[userid] {
   rule: userid == account.id;
 }
 
+email2user {
+  permit : set, get;
+  rule: true;
+}
