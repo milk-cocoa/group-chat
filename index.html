@@ -63,14 +63,7 @@
 	</div>
 	<div class="col-xs-2">
 		<!-- Single button -->
-		<div class="btn-group">
-		  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-		    メニュー <span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" role="menu">
-		    <li><a v-on="click: goto_account()">アカウント</a></li>
-		  </ul>
-		</div>
+		<a class="btn btn-default" href="#account">アカウント</a>
 	</div>
 </div>
 <div class="row">
@@ -105,15 +98,7 @@
 		</ol>
 	</div>
 	<div class="col-xs-2">
-		<!-- Single button -->
-		<div class="btn-group">
-		  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-		    メニュー <span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" role="menu">
-		    <li><a v-on="click: goto_invite()">招待</a></li>
-		  </ul>
-		</div>
+	<a class="btn btn-default" v-attr="href:invite_link">招待</a>
 	</div>
 </div>
 
@@ -158,6 +143,7 @@
 <script id="invite-template" type="text/template">
 <ol class="breadcrumb">
   <li><a href="#">トピック</a></li>
+  <li><a v-text="title" v-attr="href:topic_link"></a></li>
   <li class="active">招待</li>
 </ol>
 	<div class="row">
