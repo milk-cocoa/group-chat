@@ -12,8 +12,8 @@
 	            fetch : function() {
 	            	var self = this;
 					var userDataStore = milkcocoa.dataStore("user").child(option.current_user.id);
-	            	userDataStore.get("info", function(e) {
-	            		self.username = e.username;
+	            	userDataStore.get("info", function(err, info) {
+	            		self.username = info.value.username;
 	            	});
 	            },
 	            update : function() {

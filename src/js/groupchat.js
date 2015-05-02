@@ -1,5 +1,12 @@
 (function(){
-	var milkcocoa = new MilkCocoa("https://io-di1sl8dpt.mlkcca.com:443/");
+    var milkcocoa = new MilkCocoa("readi93m3gfd.mlkcca.com");
+    var auth0 = new Auth0({
+        domain:       'milkcocoa.auth0.com',
+        clientID:     'hfkROMu3xWxFPYCtF4w8oNMf8MrPhchT',
+        //callbackURL:  '{YOUR APP URL}',
+        callbackOnLocationHash: true
+    });
+
     var current_topic = {
         id : ""
     }
@@ -28,11 +35,11 @@
             currentView: null
         }
     });
-    init_login(app, milkcocoa, function(err, user) {
+    init_login(app, milkcocoa, auth0, function(err, user) {
         app.currentView = "topics";
-        current_user.id = user.id;
+        current_user.id = user.sub;
     });
-    init_register(app, milkcocoa);
+    init_register(app, milkcocoa, auth0);
     init_topics(app, milkcocoa, {
         global : global,
         current_user : current_user,
@@ -58,17 +65,13 @@
 
 
 
-    milkcocoa.getCurrentUser(function(err, user) {
+    milkcocoa.user(function(err, user) {
         if(user) {
-            current_user.id = user.id;
-            current_user.email = user.email;
+            current_user.id = user.sub;
             var userDataStore = milkcocoa.dataStore("user").child(current_user.id);
-            userDataStore.get("info", function(e) {
-                if(e) {
-                    current_user.name = e.username;
-                }else{
-                    current_user.name = current_user.email;
-                }
+            userDataStore.get("info", function(err, info) {
+                current_user.name = info.value.email;
+                current_user.email = info.value.email;
                 hashchange();
             });
         }else{

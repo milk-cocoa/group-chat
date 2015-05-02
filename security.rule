@@ -1,26 +1,31 @@
 topics/* {
-permit : push;
-rule : true;
+  permit : push;
+  rule : true;
 }
 
 topics/[userid]/[topicid]/allow {
   permit : all;
-  rule : userid == account.id;
+  rule : userid == account.sub;
 }
 
 topics/[userid]/[topicid] {
   permit : all;
-  rule : dataStore("topics/" + userid + "/" + topicid + "/allow").exist({email : account.email});
+  rule : dataStore("topics/" + userid + "/" + topicid + "/allow").exists(account.sub);
+}
+
+topics/[userid] {
+  permit : push, on(push);
+  rule : userid == account.sub;
 }
 
 user/[userid]/topics {
-  permit : set, push;
+  permit : set, push, on(push);
   rule: true;
 }
 
 user/[userid] {
   permit : all;
-  rule: userid == account.id;
+  rule: userid == account.sub;
 }
 
 email2user {

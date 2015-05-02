@@ -10,8 +10,13 @@
 	            new_message : ""
 	        },
 	        filters: {
-	            message_filter : function(messages) {
-	            	return messages;
+	            messages_filter : function(messages) {
+	            	return messages.map(function(message) {
+	            		return {
+	            			content : global.Util.escapeHTML(message.value.content),
+	            			username : global.Util.escapeHTML(message.value.user.name)
+	            		}
+	            	})
 	            }
 	        },
 	        ready : function() {
@@ -39,20 +44,22 @@
 					self.invite_link = "#" + owner_id + "/" + topic_id + "/invite";
 					var topicDataStore = milkcocoa.dataStore("topics").child(owner_id);
 					var messageDataStore = topicDataStore.child(topic_id);
-	                topicDataStore.get(topic_id, function(topic) {
-	                	self.title = topic.title;
+	                topicDataStore.get(topic_id, function(err, topic) {
+	                	if(err) {
+	                		return;
+	                	}
+	                	self.title = topic.value.title;
 	                    window.document.title = self.title;
 	                });
 	                messageDataStore.off("push");
-	                messageDataStore.on("push", function(e) {
-	                	self.messages.unshift({
-	                		content : global.Util.escapeHTML(e.value.content),
-	                		user : {
-	                			name : global.Util.escapeHTML(e.value.user.name)
-	                		}
-	                	});
+	                messageDataStore.on("push", function(pushed) {
+	                	self.messages.unshift(pushed);
 	                });
-	                messageDataStore.query().sort('desc').limit(20).done(function(memos) {
+	                messageDataStore.stream().sort('desc').size(20).next(function(err, memos) {
+	                	if(err) {
+	                		console.error("Permission Denied");
+	                		return;
+	                	}
 	                    self.messages = memos;
 	                });
 	            }
